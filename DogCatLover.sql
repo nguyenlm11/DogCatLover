@@ -1,21 +1,25 @@
 DROP DATABASE DogCatLoverFlatform
+GO
 
 CREATE DATABASE DogCatLoverFlatform
+GO
 
 USE DogCatLoverFlatform
+GO
 
 
 CREATE TABLE [Account] (
-[id] INT NOT NULL IDENTITY(1,1),
+[user_id] VARCHAR(50) NOT NULL,
 [fullname] NVARCHAR(50) NOT NULL,
 [email] VARCHAR(50) NOT NULL,
 [password] VARCHAR(20) NOT NULL,
 [phone_number] VARCHAR(20) NOT NULL,
+[description] VARCHAR(100) NOT NULL,
 [role] VARCHAR(10),
 [status] VARCHAR(20) NOT NULL,
 [created_at] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
 [updated_at] DATETIME2,
-CONSTRAINT pk_account PRIMARY KEY (id)
+CONSTRAINT pk_account PRIMARY KEY ([user_id])
 )
 GO
 
@@ -32,14 +36,14 @@ CREATE TABLE [Post] (
 [id] INT NOT NULL IDENTITY(1,1),
 [title] NVARCHAR(50) NOT NULL,
 [category_id] INT NOT NULL,
-[author_id] INT NOT NULL,
+[author_id] VARCHAR(50) NOT NULL,
 [content] NVARCHAR(255) NOT NULL,
 [status] VARCHAR(20) NOT NULL,
 [rejected_reason] VARCHAR(50),
 [created_at] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
 [updated_at] DATETIME2,
 CONSTRAINT pk_post PRIMARY KEY (id),
-CONSTRAINT fk_account FOREIGN KEY (author_id) REFERENCES [Account](id),
+CONSTRAINT fk_account FOREIGN KEY (author_id) REFERENCES [Account]([user_id]),
 CONSTRAINT fk_post_category FOREIGN KEY ([category_id]) REFERENCES [Post_category](id)
 )
 GO
@@ -66,33 +70,33 @@ GO
 
 CREATE TABLE [Notification] (
 [id] INT NOT NULL IDENTITY(1,1),
-[account_id] INT NOT NULL,
+[account_id] VARCHAR(50) NOT NULL,
 [title] NVARCHAR(50) NOT NULL,
 [content] NVARCHAR(255) NOT NULL,
 [created_at] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
 [updated_at] DATETIME2,
 CONSTRAINT pk_notification PRIMARY KEY (id),
-CONSTRAINT fk_notificate_account FOREIGN KEY (account_id) REFERENCES [Account](id)
+CONSTRAINT fk_notificate_account FOREIGN KEY (account_id) REFERENCES [Account]([user_id])
 )
 GO
 
 CREATE TABLE [Comment] (
 [id] INT NOT NULL IDENTITY(1,1),
-[author_id] INT NOT NULL,
+[author_id] VARCHAR(50) NOT NULL,
 [post_id] INT NOT NULL,
 [content] NVARCHAR(255) NOT NULL,
 [parent_id] INT NOT NULL,
 [created_at] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
 [updated_at] DATETIME2,
 CONSTRAINT pk_comment PRIMARY KEY (id),
-CONSTRAINT fk_author_comment FOREIGN KEY (author_id) REFERENCES [Account](id),
+CONSTRAINT fk_author_comment FOREIGN KEY (author_id) REFERENCES [Account]([user_id]),
 CONSTRAINT fk_post_comment FOREIGN KEY (post_id) REFERENCES [Post](id)
 )
 GO
 
 CREATE TABLE [Trade] (
 [id] INT NOT NULL IDENTITY(1,1),
-[author_id] INT NOT NULL,
+[author_id] VARCHAR(50) NOT NULL,
 [title] NVARCHAR(50) NOT NULL,
 [content] NVARCHAR(255) NOT NULL,
 [status] VARCHAR(20) NOT NULL,
@@ -100,7 +104,7 @@ CREATE TABLE [Trade] (
 [created_at] DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
 [updated_at] DATETIME2,
 CONSTRAINT pk_trade PRIMARY KEY (id),
-CONSTRAINT fk_author_trade FOREIGN KEY (author_id) REFERENCES [Account](id)
+CONSTRAINT fk_author_trade FOREIGN KEY (author_id) REFERENCES [Account]([user_id])
 )
 GO
 
